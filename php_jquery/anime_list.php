@@ -4,9 +4,10 @@
     <meta charset="<php? echo 'UTF-8';?>">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>PHP Jquery</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+    <script type = "text/javascript" src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 </head>
 <body>
 <div class='container'>
@@ -49,6 +50,15 @@
 
 
       echo "
+      <div class='toast position-fixed top-0 end-0 p-3'>
+        <div class='toast-header'>
+          Message
+        </div>
+        <div class='toast-body'>
+          
+        </div>
+      </div>
+
       <table style='width:100%' class='table'>
         <tr>
           <th>Id</th>
@@ -63,27 +73,38 @@
         echo "
         <tr>
           <td>{$row["anime_id"]}</td>
-          <td>{$row["anime_name"]}</td>
           <td>
-          <form action='edit.php' method='get' target='_blank'>
-            <input hidden type='text' class='form-control' name='id' value='{$row["anime_id"]}'>
-            <input hidden type='text' class='form-control' name='name' value='{$row["anime_name"]}'>
-            <button type='submit' class='btn btn-danger'>Edit</button>
-          </form>
-
-          <a href='edit.php?id={$row["anime_id"]}&name={$row["anime_name"]}'>Edit by Tag A</a>
+            <input type='text' class='form-control' name='name' 
+              value='{$row["anime_name"]}' 
+              id='anime_edit_{$row["anime_id"]}'
+            >
           </td>
-          <td>
-          <form action='delete.php' method='get' target='_blank'>
-            <input hidden type='text' class='form-control' name='id' value='{$row["anime_id"]}'>
-            <button type='submit' class='btn btn-danger'>Delete</button>
-          </form>
-          <br>
-          <button class='btn btn-danger' onclick='window.location.href=\"delete.php?id={$row["anime_id"]}\";'>
-            Delete ไม่ใช้ Form
-          </button>
+          <script type = 'text/javascript' language = 'javascript'>
+          $(document).ready(function() {
+             $(`#anime_edit_{$row["anime_id"]}`).change(function(event){
 
-          <a href='delete.php?id={$row["anime_id"]}'>Delete by Tag A</a>
+                let name = $(`#anime_edit_{$row["anime_id"]}`).val();
+                $.get( 
+                   `edit_save.php?id={$row["anime_id"]}&name=`+name,
+                   function(result) {
+
+                     if(result){
+                       $('.toast-body').html(`Result: {$row["anime_name"]} บันทึกแล้ว`)
+                       $('.toast').toast('show');
+                     }
+                   }
+                ); 
+           
+             });
+          });
+          </script>
+          <td>
+          <a href='edit.php?id={$row["anime_id"]}'>Edit by Tag A</a>
+          </td>          
+          <td>
+          <button class='btn btn-danger' onclick='window.location.href=\"delete.php?id={$row["anime_id"]}\";'>
+            Delete 
+          </button>
           </td>
         </tr>
         ";
@@ -99,4 +120,21 @@
     ?>
 </div>
 </body>
+<script type = "text/javascript" language = "javascript">
+         $(document).ready(function() {
+			
+            $("#driver").click(function(event){
+				
+               $.post( 
+                  "result.php",
+                  { name: "Zara" },
+                  function(data) {
+                     $('#stage').html(data);
+                  }
+               );
+					
+            });
+				
+         });
+</script>
 </html>
